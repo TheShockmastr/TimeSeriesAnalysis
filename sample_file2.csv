@@ -1,0 +1,16 @@
+sample,group,replicate,timepoint
+B100,Control,C_1,1
+B200,Exp,C_2,1
+B300,Exp,C_3,1
+B105,Control,EF_1,2
+B205,Exp,EF_2,2
+B305,Exp,EF_3,2
+B110,Control,SF_1,3
+B210,Exp,SF_2,3
+B310,Exp,SF_3,3
+B135,Control,F_1,4
+B235,Exp,F_2,4
+B335,Exp,F_3,4
+B175,Control,TF_1,5
+B275,Exp,TF_2,5
+B375,Exp,TF_3,5

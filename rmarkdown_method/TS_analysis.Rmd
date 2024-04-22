@@ -33,23 +33,23 @@ Set the below parameters for the downstream analysis
 #This writes example data to directory
 #Use 'PBMC', 'murine', or 'celegans' to load the different experimental data
 #Note that celegans is a heavy dataset and will take time to write to directory.
-write_example_data_to_dir('PBMC')
+#write_example_data_to_dir('PBMC')
 
 #Give names to saved object and name of results repository
-name_result_folder<-'TS_results_PBMC_example/'
-obj_name<-'timeSeries_obj_PBMC_example.Rdata'
+name_result_folder<-'C://Users//Shurt//Documents//TimeSeriesAnalysis//TS_results_Avery_counts1/'
+obj_name<-'timeSeries_obj_Avery_counts1.Rdata'
 
-#Path to count data and sample data respectively
-my_path_data<-'data/PBMC/raw_counts_TS'
-my_path_sample_dta<-'data/PBMC/sample_file.csv'
+#Path to count data and sample data respectively change the following name with your data file
+my_path_data<-'C://Users//Shurt//Documents//TimeSeriesAnalysis//data//countsperthousand//counts1.txt'
+my_path_sample_dta<-'C://Users//Shurt//Documents//TimeSeriesAnalysis//sample_file2.csv'
 
 #Set-up time series object parameters
 diff_exp_type<-'DESeq2' #package used for DE – can also be 'limma'
 p_val_filter_type<-'padj' #Either padj or pvalue, used to filter for significance
 p_thresh<-0.05 #pvalue or padj value threshold for significance
 l2fc_thresh<-1 #log(2)foldChange threshold for significance
-name_control<-'LPS' #Name of control as seen in the sample file
-name_experiment<-'IgM' #Name of experiment as seen in the sample file
+name_control<-'Control' #Name of control as seen in the sample file
+name_experiment<-'Exp' #Name of experiment as seen in the sample file
 graphic_vector<-c("#e31a1c","#1f78b4") #Pre-set colors for the groups
 
 #Declare organism and load library, install if necessary
@@ -59,7 +59,7 @@ if(system.file(package=org_sem_sim) ==''){#Package not installed
     install.packages("BiocManager")
   BiocManager::install(org_sem_sim)
 }
-library('org.Hs.eg.db')
+library('org.At.tair.db')
 
 #Define specimen and ontology parameters
 my_ont_gpro='GO:BP'
@@ -68,7 +68,7 @@ my_ont_sem_sim='BP'
 #mmusculus
 #hsapiens
 #celegans
-my_org_gpro='hsapiens' #Set the species for the gprofiler analysis
+my_org_gpro='athalania' #Set the species for the gprofiler analysis
 
 # The seed serves to create reproducible results with PART.
 # A seed will ensure that the random components of PART clustering will be the same
@@ -85,18 +85,14 @@ log_tp_traj<-FALSE #Defines if timepoints should be log transformed for illustra
 # Allows for all temporal combinations to be done instead
 # of just sequential comparison. ex: do TP2vsTP1, TP3vsTP2, AND TP3vsTP1. In a normal instance
 # only the first two comparison of the example would be run.
-do_all_temporal_comparisons=FALSE
+do_all_temporal_comparisons=TRUE
 
 #Used to highlight specific genes regardless of differential gene expression significance
-genes_of_interest <- c('AICDA','APOBEC3H','APOBEC3F','APOBEC3D','APOBEC3C','APOBEC3G','APOBEC3B','APOBEC3A','SMUG1','UNG','EGFR')
+#genes_of_interest <- c('AICDA','APOBEC3H','APOBEC3F','APOBEC3D','APOBEC3C','APOBEC3G','APOBEC3B','APOBEC3A','SMUG1','UNG','EGFR')
 
 #The ancestors that will be queried, the ontology must be specified (BP,MF,or CC)
 #Set to an empty vector c() if not required by the analysis
-target_ancestors<-c('GO:0002253','GO:0019882','GO:0002404','GO:0002339','GO:0042386',
-                    'GO:0035172','GO:0002252','GO:0006955','GO:0002520','GO:0090713',
-                    'GO:0045321','GO:0001776','GO:0050900','GO:0031294','GO:0002262',
-                    'GO:0002683','GO:0002684','GO:0002440','GO:0002682','GO:0002200',
-                    'GO:0045058','GO:0002507')
+target_ancestors<-c()
 ancestor_ontology<-'BP'
 
 #Some extra set-up
@@ -202,9 +198,9 @@ object will then contain the gprofiler analysis results and can be used to gener
 plots with the downstream code chunks.
 ```{r run_Gpro ,message=FALSE,warning=FALSE}
 # load('timeseries_obj_res.Rdata')
-TS_object<-run_gprofiler_PART_clusters(TS_object) #Run the gprofiler analysis
+#TS_object<-run_gprofiler_PART_clusters(TS_object) #Run the gprofiler analysis
 #Save the results in a Rdata object
-save(TS_object,file=name_save_obj)
+#save(TS_object,file=name_save_obj)
 
 ```
 
@@ -222,8 +218,8 @@ in the top right of each respective interactive plot
 
 ```{r results_setup ,echo=FALSE,message=FALSE,warning=FALSE}
 #Calcualte and plot the TimeSeries PCA
-TS_pca<-plot_PCA_TS(TS_object,DE_type='all')
-ggsave(paste0(name_result_folder,"PCA_plot.png"),dpi=300,width=21, height=19, units='cm',plot=TS_pca)
+#TS_pca<-plot_PCA_TS(TS_object,DE_type='all')
+#ggsave(paste0(name_result_folder,"PCA_plot.png"),dpi=300,width=21, height=19, units='cm',plot=TS_pca)
 
 #Creating sample_data without row.names for illustration in Rmarkdown format
 sample_dta<-exp_sample_data(TS_object)
@@ -253,15 +249,16 @@ row.names(sample_dta)=NULL
 ```{r DE_results ,echo=FALSE,message=FALSE,warning=FALSE}
 
 #Create results for conditional and temporal differential gene expression results
-plot_wrapper_DE_results(object=TS_object,DE_type='conditional',genes_of_interest=genes_of_interest,results_folder=name_result_folder)
-plot_wrapper_DE_results(object=TS_object,DE_type='temporal',genes_of_interest=genes_of_interest,results_folder=name_result_folder)
+plot_wrapper_DE_results(object=TS_object,DE_type='conditional',results_folder=name_result_folder)
+#usually hangs here (1)
+plot_wrapper_DE_results(object=TS_object,DE_type='temporal',results_folder=name_result_folder)
 
 #Creates a table for rmarkdown illustration
 DEG_table<-create_DEG_df(TS_object)
 #Create the repository for genes_of_interest and perform the analysis
 dir.create(paste0(name_result_folder,'genes_of_interest/'))
 #May create warnings if there are too few timepoints, plots will be created as intended
-create_tables_genes_of_interest_DE(TS_object,genes_of_interest,save_location=paste0(name_result_folder,'genes_of_interest/'),log_tp = log_tp_traj)
+#create_tables_genes_of_interest_DE(TS_object,genes_of_interest,save_location=paste0(name_result_folder,'genes_of_interest/'),log_tp = log_tp_traj)
 
 ```
 ## Differential Gene Expression results
@@ -302,18 +299,18 @@ while TP3_vs_TP2 would have TP3 as the 'experiment' and TP2 as the 'control'. No
 ```{r genes_interest, echo=FALSE, message=FALSE, warning=FALSE, out.width= "65%", out.extra='style="float:right; padding:10px"'}
 #Subset for genes in the analysis
 count_matrix_norm<-exp_matrix(TS_object,'norm')
-gene_matrix_interest<-count_matrix_norm[row.names(count_matrix_norm) %in% genes_of_interest,]
-if(nrow(gene_matrix_interest)>0){
-  var_vect <- apply(gene_matrix_interest, 1, stats::var)
-  selected_gene<-names(sort(var_vect,decreasing=TRUE))[1]
-  target_file<-paste0(name_result_folder,'genes_of_interest/',selected_gene,'.png')
-  knitr::include_graphics(target_file)
-}else{
+#gene_matrix_interest<-count_matrix_norm[row.names(count_matrix_norm) %in% genes_of_interest,]
+#if(nrow(gene_matrix_interest)>0){
+  #var_vect <- apply(gene_matrix_interest, 1, stats::var)
+  #selected_gene<-names(sort(var_vect,decreasing=TRUE))[1]
+  #target_file<-paste0(name_result_folder,'genes_of_interest/',selected_gene,'.png')
+  #knitr::include_graphics(target_file)
+
   selected_gene<-row.names(slot(TS_object,'PART_results')$cluster_map)[1]
   gene_traj_dta<-calculate_gene_traj_data(TS_object,selected_gene,log_tp_traj)
   gene_traj_plot<-plot_single_gene_traj(gene_traj_dta,slot(TS_object,'group_colors'))
   gene_traj_plot
-}
+
 
 ```
 If genes of interest have been specified, the pipeline will extract the differential 
